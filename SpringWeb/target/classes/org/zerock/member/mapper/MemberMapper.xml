@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.zerock.member.mapper.MemberMapper">
+
+ <insert id="join" parameterType="org.zerock.member.command.MemberVO">
+ 	insert into members (id, pw, name) values(#{id }, #{pw }, #{name })
+ </insert>
+ 
+ <select id="login" resultType="int" parameterType="org.zerock.member.command.MemberVO">
+ 	select count(*) as result from members where id = #{id} and pw = #{pw}
+ </select>
+ 
+ <select id="idCheck" resultType="int">
+ 	select count(*) as result from members where id = #{id}
+ </select>
+
+</mapper>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace 속성에는 사용할 매퍼의 인터페이스를 경로 지정 -->
+<mapper namespace="org.zerock.board.mapper.BoardMapper">
+
+	<!-- 게시물 목록 -->
+	<select id="getList" resultType="org.zerock.board.command.BoardVO">
+		select * from tbl_board order by bno desc
+	</select>
+
+	<!-- 게시물 등록 -->
+	<insert id="insertBoard" >
+		insert into tbl_board (bno, title, content, writer) values(seq_board.nextval, #{title}, #{content}, #{writer})
+	</insert>
+	
+	<select id="getContent" parameterType="int" resultType="org.zerock.board.command.BoardVO">
+		select * from tbl_board where bno = #{num}
+	</select>
+	
+	<update id="updateBoard" parameterType="org.zerock.board.command.BoardVO">
+		update tbl_board set title = #{title}, content = #{content}, writer = #{writer}, updatedate = sysdate where bno = #{bno} 
+	</update>
+	
+	<delete id="deleteBoard" parameterType="int">
+		delete from tbl_board where bno = #{num}
+	</delete>
+	
+	<!-- 페이징 쿼리 -->
+	<select id="pagingList" resultType="org.zerock.board.command.BoardVO" parameterType="org.zerock.board.command.Criteria">
+		select * from (select rownum as rnum, B.* from tbl_board B where rownum &lt;= #{count_oracle} order by bno desc) where #{pageStart} &lt;= rnum
+	</select>
+	
+	<select id="getTotal" resultType="int">
+		select count(*) from tbl_board
+	</select>
+	
+</mapper>

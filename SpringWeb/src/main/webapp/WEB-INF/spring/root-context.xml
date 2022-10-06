@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.3.xsd
+		http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+	
+	<!-- root-context.xml은 DB관련 작업을 진행 -->
+	<!-- namespace에서 mybatis, jdbc 스키마 정보를 체크, 추가 -->
+	
+	<!-- HikariCP 설정 빈 등록 -->
+	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="jdbcUrl" value="jdbc:oracle:thin:@localhost:1521/XEPDB1" />
+		<property name="username" value="spring" />
+		<property name="password" value="spring" />
+	</bean>
+	
+	<!-- 히카리 DataSource 등록 -->
+	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">
+		<constructor-arg ref="hikariConfig" />
+	</bean>
+	
+	<!-- MyBatis 사용을 위한 객체 생성 : SqlSessionFactory -->
+	<!-- 
+		세션 팩토리는 내부적으로 DB와 연결해주고, pstmt의 sql문도 전달 처리해줌
+		반복적인 객체 close() 작업또한 처리해줌.
+	 -->
+	 
+	 <!--  트랜잭션을 위한 bean등록 -->
+	 <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+	 	<property name="dataSource" ref="dataSource" />
+	 </bean>
+	 
+	 <!-- MyBatis의 맵퍼 패키지를 스캔하는 태그를 작성 -->
+	 <mybatis-spring:scan base-package="org.zerock.testmapper"/>
+	 <mybatis-spring:scan base-package="org.zerock.board.mapper"/>
+	 <mybatis-spring:scan base-package="org.zerock.member.mapper"/>
+	 <mybatis-spring:scan base-package="org.zerock.reply.mapper"/>
+	 
+	 <!-- 트랜잭션을 위한 bean등록 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	<!-- 트랜잭션을 위한 어노테이션 동작 활성화 -->
+	<tx:annotation-driven/>
+	 
+	 <aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+		
+</beans>
