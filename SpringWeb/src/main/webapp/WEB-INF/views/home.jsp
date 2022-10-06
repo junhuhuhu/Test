@@ -19,7 +19,7 @@
   <div class="row">
     <div class="col-sm-5">
       <h2>자신을 소개하세요</h2>
-      <h5>당신의 사진을 넣어보세요</h5>
+      <h5>당신의 사진을 넣어보세요111</h5>
       <div>
       	<!-- 사진을 넣어보실래요????????경로는 절대경로! -->
       	<img class="img-fluid" src="/MyWeb/resources/img/test.svg" height="300px" width="500px">
